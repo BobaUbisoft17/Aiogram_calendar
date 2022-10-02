@@ -68,21 +68,23 @@ class CalendarMarkup:
         self.month = month
         self.year = year
 
-    @classmethod
-    def next_month(cls, month: int, year: int) -> Markup:
+    def next_month(self) -> Markup:
         """Получение данных на следующий месяц."""
-        current_month = datetime.date(year, month, 5)
-        current_days_count = monthrange(year, month)[1]
+        current_month = datetime.date(self.year, self.month, 5)
+        current_days_count = monthrange(self.year, self.month)[1]
         next_date = current_month + datetime.timedelta(days=current_days_count)
-        return cls(next_date.month, next_date.year).build
+        return self.change_month(next_date.month, next_date.year)
+
+    def previous_month(self) -> Markup:
+        """Получение данных на предыдущий месяц."""
+        current_month = datetime.date(self.year, self.month, 5)
+        current_days_count = monthrange(self.year, self.month)[1]
+        next_date = current_month - datetime.timedelta(days=current_days_count)
+        return self.change_month(next_date.month, next_date.year)
 
     @classmethod
-    def previous_month(cls, month: int, year: int) -> Markup:
-        """Получение данных на предыдущий месяц."""
-        current_month = datetime.date(year, month, 5)
-        current_days_count = monthrange(year, month)[1]
-        next_date = current_month - datetime.timedelta(days=current_days_count)
-        return cls(next_date.month, next_date.year).build
+    def change_month(cls, month: int, year: int) -> Markup:
+        return cls(month, year).build
 
     def title(self) -> InlineKeyboardButton:
         """Создание заголовка календаря."""

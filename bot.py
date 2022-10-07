@@ -1,26 +1,22 @@
-from aiogram import Bot, Dispatcher, executor, types
-from aiogram.contrib.fsm_storage.memory import MemoryStorage
-from aiogram.dispatcher import FSMContext
-from aiogram.dispatcher.filters.state import State, StatesGroup
+"""Модуль для работы с Telegram."""
+
 import datetime
 import logging
 import os
+
+from aiogram import Bot, Dispatcher, executor, types
 
 from tg_calendar import CalendarMarkup
 
 
 logging.basicConfig(level=logging.INFO)
 bot = Bot(token=os.getenv("BOTTOKEN"))
-dp = Dispatcher(bot, storage=MemoryStorage())
-
-
-class Get_schedule(StatesGroup):
-    date = State()
-    group = State()
+dp = Dispatcher(bot)
 
 
 @dp.message_handler(commands=["start"])
-async def hi_hendler(message: types.Message):
+async def hi_hendler(message: types.Message) -> None:
+    """Приветственная функция."""
     current_date = datetime.datetime.now()
     current_month = current_date.month
     current_year = current_date.year
@@ -31,16 +27,20 @@ async def hi_hendler(message: types.Message):
 
 
 @dp.callback_query_handler()
-async def get_date(callback: types.CallbackQuery, state: FSMContext):
+async def get_date(callback: types.CallbackQuery) -> None:
+    """Ответ на нажатие кнопок календаря."""
     mes = callback.data
     if "date" in mes:
         await callback.message.answer(text=callback.data.split()[1])
-        await bot.delete_message(callback.from_user.id, callback.message.message_id)
+        await bot.delete_message(
+            callback.from_user.id, callback.message.message_id
+        )
     elif "back" in mes or "next" in mes:
         await get_next_month(callback)
 
 
-async def get_next_month(callback: types.CallbackQuery):
+async def get_next_month(callback: types.CallbackQuery) -> None:
+    """Смена месяца на клавиатуре."""
     month, year = map(int, callback.data.split()[1].split("."))
     calendar = CalendarMarkup(month, year)
     if "next" in callback.data:

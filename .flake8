@@ -1,0 +1,4 @@
+[flake8]
+docstring-convention = numpy
+ignore = ANN101, ANN102
+max-complexity = 5

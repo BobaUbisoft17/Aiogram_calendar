@@ -75,19 +75,14 @@ class CalendarMarkup:
         current_month = datetime.date(self.year, self.month, 5)
         current_days_count = monthrange(self.year, self.month)[1]
         next_date = current_month + datetime.timedelta(days=current_days_count)
-        return self.change_month(next_date.month, next_date.year)
+        return CalendarMarkup(next_date.month, next_date.year).build
 
     def previous_month(self) -> Markup:
         """Получение данных на предыдущий месяц."""
         current_month = datetime.date(self.year, self.month, 5)
         current_days_count = monthrange(self.year, self.month)[1]
         next_date = current_month - datetime.timedelta(days=current_days_count)
-        return self.change_month(next_date.month, next_date.year)
-
-    @classmethod
-    def change_month(cls, month: int, year: int) -> Markup:
-        """Метод для создания календаря на ближайший месяц."""
-        return cls(month, year).build
+        return CalendarMarkup(next_date.month, next_date.year).build
 
     def title(self) -> InlineKeyboardButton:
         """Создание заголовка календаря."""

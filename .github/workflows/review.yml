@@ -1,8 +1,8 @@
 name: Code review
 
 on:
-  push:
-    branches: [ main ]
+  pull_requests:
+    types: [ opened, synchronize ]
 
 jobs:
   build:
